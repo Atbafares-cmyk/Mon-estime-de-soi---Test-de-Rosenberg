@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="robots" content="noindex">
+<title>Mon estime de soi - Test de Rosenberg</title>
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem("rosenberg-theme");
+    if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+  } catch (e) {}
+})();
+</script>
+<style>
+:root {
+  --bg: #101010;
+  --card: #1b1b1b;
+  --card-2: #242424;
+  --text: #f4f4f4;
+  --muted: #b9b9b9;
+  --border: #3a3a3a;
+  --accent: #f07a8b;
+  --on-accent: #101010;
+  --soft: #3a2328;
+  --focus: #ffd36b;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg: #f7f5f3;
+  --card: #ffffff;
+  --card-2: #f0ecea;
+  --text: #101010;
+  --muted: #55504e;
+  --border: #cfc8c4;
+  --accent: #c23b4f;
+  --on-accent: #ffffff;
+  --soft: #fbe6e9;
+  --focus: #0a58ca;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f7f5f3;
+    --card: #ffffff;
+    --card-2: #f0ecea;
+    --text: #101010;
+    --muted: #55504e;
+    --border: #cfc8c4;
+    --accent: #c23b4f;
+    --on-accent: #ffffff;
+    --soft: #fbe6e9;
+    --focus: #0a58ca;
+    color-scheme: light;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+main { max-width: 640px; margin: 0 auto; padding: 20px 16px 120px; }
+h1 { font-size: 1.6rem; line-height: 1.2; margin: 8px 0 12px; }
+h2 { font-size: 1.25rem; line-height: 1.3; margin: 0 0 8px; }
+p { margin: 0 0 12px; }
+.kicker { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0 0 4px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin: 14px 0; }
+.muted { color: var(--muted); }
+.small { font-size: .9rem; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.btn {
+  display: block; width: 100%;
+  min-height: 52px; padding: 12px 18px;
+  border-radius: 14px; border: 2px solid var(--accent);
+  background: var(--accent); color: var(--on-accent);
+  font: inherit; font-weight: 700; text-align: center; cursor: pointer;
+}
+.btn.secondary { background: transparent; color: var(--text); border-color: var(--border); }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.row { display: flex; gap: 10px; margin-top: 14px; }
+.row .btn { flex: 1; }
+
+.progress { height: 10px; background: var(--card-2); border-radius: 99px; overflow: hidden; margin: 6px 0 4px; }
+.progress > span { display: block; height: 100%; background: var(--accent); width: 0; transition: width .25s; }
+@media (prefers-reduced-motion: reduce) { .progress > span { transition: none; } }
+
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+legend { font-size: 1.3rem; font-weight: 700; line-height: 1.35; padding: 0; margin-bottom: 14px; }
+.choice { position: relative; display: block; margin: 0 0 10px; }
+.choice input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.choice span {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 56px; padding: 10px 14px;
+  border: 2px solid var(--border); border-radius: 14px; background: var(--card);
+}
+.choice b {
+  flex: 0 0 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 2px solid var(--border); font-size: 1rem;
+}
+.choice input:checked + span { border-color: var(--accent); background: var(--soft); }
+.choice input:checked + span b { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.choice input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.score { text-align: center; }
+.score .big { font-size: 3.4rem; font-weight: 800; line-height: 1; color: var(--accent); }
+.score .of { font-size: 1.1rem; color: var(--muted); }
+.gauge { position: relative; height: 14px; background: var(--card-2); border-radius: 99px; margin: 18px 6px 6px; }
+.gauge i { position: absolute; top: -5px; width: 24px; height: 24px; margin-left: -12px; border-radius: 50%; background: var(--accent); border: 3px solid var(--bg); }
+.gauge-legend { display: flex; justify-content: space-between; font-size: .85rem; color: var(--muted); margin: 0 6px; }
+
+.bands { list-style: none; margin: 0; padding: 0; }
+.bands li { display: flex; flex-wrap: wrap; gap: 2px 10px; align-items: baseline; padding: 10px 12px; border: 2px solid transparent; border-radius: 12px; margin-bottom: 6px; background: var(--card-2); }
+.bands li strong { flex: 1 1 100%; }
+.bands li.here { border-color: var(--accent); background: var(--soft); }
+.bands li .tag { margin-left: auto; font-size: .8rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+.items { list-style: none; margin: 0; padding: 0; }
+.items li { padding: 12px 0; border-top: 1px solid var(--border); }
+.items li:first-child { border-top: 0; }
+.items .n { font-weight: 700; color: var(--accent); }
+.items .pts { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 4px; font-size: .92rem; color: var(--muted); }
+.items .inv { font-weight: 700; color: var(--text); }
+
+details summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+details p { margin-top: 6px; }
+
+footer { margin-top: 28px; text-align: center; font-size: .85rem; color: var(--muted); }
+footer p { margin: 0 0 6px; }
+
+#themeBtn {
+  position: fixed; right: 14px; bottom: 14px; z-index: 10;
+  min-height: 44px; padding: 8px 16px; border-radius: 99px;
+  border: 2px solid var(--border); background: var(--card); color: var(--text);
+  font: inherit; font-size: .95rem; font-weight: 700; cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+}
+
+@media print {
+  :root, :root[data-theme="dark"], :root[data-theme="light"] {
+    --bg: #fff; --card: #fff; --card-2: #f2f2f2; --text: #000; --muted: #333;
+    --border: #999; --accent: #a8283a; --on-accent: #fff; --soft: #f6dde1;
+  }
+  #themeBtn, .row, .progress { display: none !important; }
+  main { padding: 0; }
+}
+</style>
+</head>
+<body>
+<main>
+  <section id="screen-home">
+    <p class="kicker">23 MindSet · Gérer ses émotions</p>
+    <h1>Mon estime de soi · Test de Rosenberg</h1>
+    <div class="card">
+      <p><strong>Consigne.</strong> Pour chacune des 10 phrases, indiquez à quel point elle est vraie pour vous. Répondez spontanément, sans chercher la bonne réponse.</p>
+      <p class="muted">Durée : environ 5 minutes. Vous travaillez seul, en silence.</p>
+      <p class="muted small">Vos réponses restent sur votre téléphone : rien n'est enregistré ni envoyé.</p>
+    </div>
+    <button class="btn" id="start" type="button">Commencer</button>
+  </section>
+
+  <section id="screen-q" hidden>
+    <p class="kicker" id="qkicker"></p>
+    <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+    <form id="qform" class="card" onsubmit="return false">
+      <fieldset id="qfield" aria-live="polite">
+        <legend id="qlegend" tabindex="-1"></legend>
+        <label class="choice"><input type="radio" name="a" value="1"><span><b>1</b>Tout à fait en désaccord</span></label>
+        <label class="choice"><input type="radio" name="a" value="2"><span><b>2</b>Plutôt en désaccord</span></label>
+        <label class="choice"><input type="radio" name="a" value="3"><span><b>3</b>Plutôt en accord</span></label>
+        <label class="choice"><input type="radio" name="a" value="4"><span><b>4</b>Tout à fait en accord</span></label>
+      </fieldset>
+    </form>
+    <div class="row">
+      <button class="btn secondary" id="prev" type="button">Précédent</button>
+      <button class="btn" id="next" type="button" disabled>Suivant</button>
+    </div>
+  </section>
+
+  <section id="screen-r" hidden aria-live="polite">
+    <p class="kicker">Ma correction</p>
+    <h1 id="rtitle" tabindex="-1">Mon score</h1>
+
+    <div class="card score">
+      <div><span class="big" id="rscore">0</span> <span class="of">/ 40 points</span></div>
+      <p id="rband" style="margin:10px 0 0;font-weight:700"></p>
+      <p id="rmsg" class="muted" style="margin:4px 0 0"></p>
+      <div class="gauge" aria-hidden="true"><i id="rmark"></i></div>
+      <div class="gauge-legend" aria-hidden="true"><span>10</span><span>25</span><span>31</span><span>34</span><span>40</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Où se situe mon score ?</h2>
+      <ul class="bands" id="bands"></ul>
+      <p class="muted small" style="margin-top:12px">C'est un repérage, pas un diagnostic. Ce score est une photo du moment : il bouge selon la période, la fatigue, le contexte. Il ne dit pas ce que vous valez. Si ce résultat vous préoccupe, parlez-en à votre médecin ou à la médecine du travail.</p>
+    </div>
+
+    <div class="card">
+      <h2>Mes réponses, phrase par phrase</h2>
+      <ul class="items" id="items"></ul>
+    </div>
+
+    <div class="card">
+      <details>
+        <summary>Comment le score est calculé</summary>
+        <p>Pour les phrases 1, 2, 4, 6 et 7, on garde votre note.</p>
+        <p>Pour les phrases 3, 5, 8, 9 et 10, la cotation est inversée : 1 vaut 4 points, 2 vaut 3 points, 3 vaut 2 points, 4 vaut 1 point.</p>
+        <p>On additionne les 10 résultats. Le score va de 10 à 40 points. L'interprétation est identique pour une femme et pour un homme.</p>
+      </details>
+    </div>
+
+    <div class="row">
+      <button class="btn secondary" id="back" type="button">Modifier mes réponses</button>
+      <button class="btn" id="again" type="button">Recommencer</button>
+    </div>
+  </section>
+
+  <footer>
+    <p>Échelle d'estime de soi de Morris Rosenberg (1965).</p>
+    <p>© 2026 - 23 MindSet - Fares ATBA</p>
+  </footer>
+</main>
+
+<button id="themeBtn" type="button" aria-label="Changer d'affichage"></button>
+
+<script>
+(function () {
+  var ITEMS = [
+    { t: "Je pense que je suis une personne de valeur, au moins égale à n'importe qui d'autre", inv: false },
+    { t: "Je pense que je possède un certain nombre de belles qualités.", inv: false },
+    { t: "Tout bien considéré, je suis porté à me considérer comme un raté", inv: true },
+    { t: "Je suis capable de faire les choses aussi bien que la majorité des gens", inv: false },
+    { t: "Je sens peu de raisons d'être fier de moi.", inv: true },
+    { t: "J'ai une attitude positive vis-à-vis moi-même.", inv: false },
+    { t: "Dans l'ensemble, je suis satisfait de moi.", inv: false },
+    { t: "J'aimerais avoir plus de respect pour moi-même", inv: true },
+    { t: "Parfois je me sens vraiment inutile.", inv: true },
+    { t: "Il m'arrive de penser que je suis un bon à rien.", inv: true }
+  ];
+  var LABELS = { 1: "Tout à fait en désaccord", 2: "Plutôt en désaccord", 3: "Plutôt en accord", 4: "Tout à fait en accord" };
+  var BANDS = [
+    { min: 10, max: 24, name: "Moins de 25 points", label: "Estime de soi très faible", msg: "Un travail dans ce domaine semble souhaitable." },
+    { min: 25, max: 30, name: "De 25 à 30 points", label: "Estime de soi faible", msg: "Un travail dans ce domaine serait bénéfique." },
+    { min: 31, max: 33, name: "De 31 à 33 points", label: "Estime de soi dans la moyenne", msg: "" },
+    { min: 34, max: 39, name: "De 34 à 39 points", label: "Estime de soi forte", msg: "" },
+    { min: 40, max: 40, name: "40 points", label: "Estime de soi très forte", msg: "Vous avez tendance à être fortement affirmé." }
+  ];
+
+  var answers = new Array(ITEMS.length);
+  var idx = 0;
+  var $ = function (id) { return document.getElementById(id); };
+  var screens = { home: $("screen-home"), q: $("screen-q"), r: $("screen-r") };
+
+  function show(name, focusEl) {
+    for (var k in screens) screens[k].hidden = (k !== name);
+    window.scrollTo(0, 0);
+    if (focusEl) focusEl.focus({ preventScroll: true });
+  }
+
+  function points(i) {
+    var a = answers[i];
+    return ITEMS[i].inv ? 5 - a : a;
+  }
+
+  function renderQ() {
+    $("qkicker").textContent = "Phrase " + (idx + 1) + " sur " + ITEMS.length;
+    $("bar").style.width = (idx / ITEMS.length * 100) + "%";
+    $("qlegend").textContent = (idx + 1) + ". " + ITEMS[idx].t;
+    var radios = document.getElementsByName("a");
+    for (var i = 0; i < radios.length; i++) radios[i].checked = (answers[idx] === Number(radios[i].value));
+    $("prev").disabled = false;
+    $("next").disabled = !answers[idx];
+    $("next").textContent = (idx === ITEMS.length - 1) ? "Voir mon score" : "Suivant";
+  }
+
+  function allAnswered() {
+    for (var i = 0; i < ITEMS.length; i++) if (!answers[i]) return false;
+    return true;
+  }
+
+  function goNext() {
+    if (!answers[idx]) return;
+    if (idx < ITEMS.length - 1) { idx++; renderQ(); $("qlegend").focus({ preventScroll: true }); window.scrollTo(0, 0); }
+    else if (allAnswered()) renderResult();
+  }
+
+  function bandFor(score) {
+    for (var i = 0; i < BANDS.length; i++) if (score >= BANDS[i].min && score <= BANDS[i].max) return i;
+    return 0;
+  }
+
+  function renderResult() {
+    var score = 0, i;
+    for (i = 0; i < ITEMS.length; i++) score += points(i);
+    var b = bandFor(score);
+    $("rscore").textContent = score;
+    $("rband").textContent = BANDS[b].label;
+    $("rmsg").textContent = BANDS[b].msg;
+    $("rmark").style.left = ((score - 10) / 30 * 100) + "%";
+
+    var bl = $("bands"); bl.innerHTML = "";
+    BANDS.forEach(function (x, k) {
+      var li = document.createElement("li");
+      if (k === b) li.className = "here";
+      var s = document.createElement("strong"); s.textContent = x.name;
+      var d = document.createElement("span"); d.textContent = x.label;
+      li.appendChild(s); li.appendChild(d);
+      if (k === b) { var t = document.createElement("span"); t.className = "tag"; t.textContent = "Mon score"; li.appendChild(t); }
+      bl.appendChild(li);
+    });
+
+    var il = $("items"); il.innerHTML = "";
+    for (i = 0; i < ITEMS.length; i++) {
+      var li2 = document.createElement("li");
+      var p = document.createElement("div");
+      var n = document.createElement("span"); n.className = "n"; n.textContent = (i + 1) + ". ";
+      p.appendChild(n); p.appendChild(document.createTextNode(ITEMS[i].t));
+      var pts = document.createElement("div"); pts.className = "pts";
+      var r1 = document.createElement("span"); r1.textContent = "Ma réponse : " + answers[i] + " (" + LABELS[answers[i]].toLowerCase() + ")";
+      var r2 = document.createElement("span"); r2.className = ITEMS[i].inv ? "inv" : "";
+      r2.textContent = "Points comptés : " + points(i) + (ITEMS[i].inv ? " (cotation inversée)" : "");
+      pts.appendChild(r1); pts.appendChild(r2);
+      li2.appendChild(p); li2.appendChild(pts);
+      il.appendChild(li2);
+    }
+    show("r", $("rtitle"));
+  }
+
+  $("start").addEventListener("click", function () { idx = 0; show("q"); renderQ(); $("qlegend").focus({ preventScroll: true }); });
+  $("prev").addEventListener("click", function () {
+    if (idx > 0) { idx--; renderQ(); $("qlegend").focus({ preventScroll: true }); window.scrollTo(0, 0); }
+    else show("home");
+  });
+  $("next").addEventListener("click", goNext);
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  $("qform").addEventListener("change", function (e) {
+    if (e.target && e.target.name === "a") {
+      answers[idx] = Number(e.target.value);
+      $("next").disabled = false;
+      if (idx < ITEMS.length - 1) setTimeout(function () { if (answers[idx]) goNext(); }, reduce ? 0 : 280);
+    }
+  });
+  $("back").addEventListener("click", function () { idx = ITEMS.length - 1; show("q"); renderQ(); $("qlegend").focus({ preventScroll: true }); });
+  $("again").addEventListener("click", function () { answers = new Array(ITEMS.length); idx = 0; show("home"); });
+
+  /* Affichage clair / sombre */
+  var root = document.documentElement;
+  var themeBtn = $("themeBtn");
+  function current() {
+    var t = root.getAttribute("data-theme");
+    if (t === "light" || t === "dark") return t;
+    return (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark";
+  }
+  function label() { themeBtn.textContent = current() === "dark" ? "☀ Clair" : "☾ Sombre"; }
+  themeBtn.addEventListener("click", function () {
+    var next = current() === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("rosenberg-theme", next); } catch (e) {}
+    label();
+  });
+  label();
+})();
+</script>
+</body>
+</html>
